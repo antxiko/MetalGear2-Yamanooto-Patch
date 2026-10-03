@@ -22,24 +22,25 @@ Como con el Game Master 2: el menú de grabar del propio juego ofrece el cartuch
 python tools/imagen.py metalgear2.rom
 ```
 
-Sale `metalgear2_yamanooto_2MB.rom`, lista para grabar en el cartucho. **Grabarla sustituye el menú y los juegos que tenga el cartucho.** En openMSX, con una máquina MSX2:
+Sale `metalgear2_yamanooto.rom` (640 KB), lista para grabar en el cartucho desde el principio de la flash: arranca el juego solo, sin menú. **Grabarla sustituye el menú y los juegos que tenga el cartucho.** En openMSX, con una máquina MSX2:
 
 ```
-openmsx -machine <un MSX2> -cart metalgear2_yamanooto_2MB.rom -romtype Yamanooto
+openmsx -machine <un MSX2> -cart metalgear2_yamanooto.rom -romtype Yamanooto
 ```
 
-`make test` pasa los 6 tests: los `.bin` salen de sus `.asm`, el menú no lleva nada del juego, el parcheador rechaza otra ROM y, con la ROM en la raíz, fuera de los tramos que declara el parcheador el juego es el original byte a byte y la imagen es la de referencia.
+`make test` pasa los 4 tests: los `.bin` salen de sus `.asm`, el parcheador rechaza otra ROM y, con la ROM en la raíz, fuera de los tramos que declara el parcheador el juego es el original byte a byte y la imagen es la de referencia.
 
 ## Cómo funciona por dentro
 
 - En 0x5DD4, la rutina que busca el Game Master 2 en las ranuras se cambia por 7 bytes que dicen que está en la ranura del propio juego.
 - En 0x186D4, la única rutina con la que el juego llama a otra ranura, en vez de saltar a la del Game Master 2 pone el driver ([launcher/mg2_driver.asm](launcher/mg2_driver.asm), 8 KB añadidos como banco 0x40) en la ventana 0x8000 con el registro SCC 0x9000 y lo llama.
 - El driver contesta como el Game Master 2: lee (función 0x08) y escribe (0x09) los ficheros; el resto de funciones responden que todo ha ido bien, que es lo único que el juego mira.
+- El juego ya es Konami SCC, el modo con el que arranca el Yamanooto: desde el principio de la flash arranca solo.
 - Cada fichero es `[0xA5][largo de 2][115 bytes de datos]`, cada 0x100 bytes de un sector de 64 KB de la flash (banco relativo 0x48). Para escribir uno se copian los tres a la RAM, se borra el sector y se vuelven a programar desde un motor en RAM (0xE500).
 
 ## De dónde sale
 
-Es una pieza de [nPackR](https://github.com/antxiko/msx-yamanooto-npackr), que la usa para meter el juego en una colección. Aquí va suelta, con el menú de nPackR ya preparado para este juego. Licencia GPL v3 ([LICENSE](LICENSE)) y una nota de uso no comercial ([NOTICE.md](NOTICE.md)).
+Sale de [nPackR](https://github.com/antxiko/msx-yamanooto-npackr), que lo usa para meter el juego en una colección. Aquí va suelto: la imagen arranca el juego directamente, sin menú. Licencia GPL v3 ([LICENSE](LICENSE)) y una nota de uso no comercial ([NOTICE.md](NOTICE.md)).
 
 ## Probado
 

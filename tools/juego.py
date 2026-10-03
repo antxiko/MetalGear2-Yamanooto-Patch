@@ -7,8 +7,10 @@ PARCHEADOR = "packager/mg2_to_yamanooto.py"
 TAM_PARCHEADO = 0x80000 + 0x2000         # + el driver como banco 0x40
 FUENTES = ["mg2_engine.asm", "mg2_driver.asm"]
 INCLUYE = {"mg2_driver.asm": ["mg2_engine.bin"]}
-SALIDA = "metalgear2_yamanooto_2MB.rom"
-SHA256_IMAGEN = "a9f7ad99022cf7ade65b35d5affad1bc49c34755342093d442546c3730a278b0"
+SALIDA = "metalgear2_yamanooto.rom"
+SECTOR = 0x48 * 0x2000                   # el sector de 64 KB donde graba
+TAM_IMAGEN = SECTOR + 0x10000           # 640 KB, para el offset 0 de la flash
+SHA256_IMAGEN = "5ea619f3ab976bfd9805195def2d0a82f18c2d1c1a7e7848d9bcbdca203b27b0"
 
 # Los tramos que el parcheador declara (offset, largo): fuera de ellos, el
 # juego parcheado es la ROM original byte a byte (tests/test_parche.py)
